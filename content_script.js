@@ -1,6 +1,23 @@
-// can't use strict mode for this file because of socket.io
-
 (function() {
+  // url of the chatserver, should be running and reachable, else extension does not work
+  var serverUrl = "http://localhost:3000"
+
+  //////////////////////////////////////////////////////////////////////////
+  // Selectors, update these if the extension stops working               //
+  //////////////////////////////////////////////////////////////////////////
+
+  // selector of the play button, be sure to only target the visible one, there could be more
+  // that have the same selector but are not visible
+  var playButtonSelector = 'div.pf-ui-element.pf-ui-element-left.pf-ui-element-active.pf-icon.pf-icon_icPlay'
+  // selector for the pause button, be sure the have the visible one
+  var pauseButtonSelector = 'div.pf-ui-element.pf-ui-element-left.pf-ui-element-active.pf-icon.pf-icon_icPause'
+  // Selector of the elements that contain the time information of the video
+  var videoDurationSelector = '.time-display-element'
+  // Selector of the progress bar of the video, is used to fire click events to get the video in sync with other chatters.
+  var progressBarSelector = ".pf-seek-bar-padding"
+  // selector of the whole videoplayer
+  var playerSelector = "#videoland-player"
+  
   // make sure the content script is only run once on the page
   if (!window.netflixPartyLoaded) {
     window.netflixPartyLoaded = true;
@@ -29,6 +46,7 @@
 
     /* SHA256 (Chris Veness) */
     var Sha256={};Sha256.hash=function(t){t=t.utf8Encode();var r=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298],e=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];t+=String.fromCharCode(128);for(var n=t.length/4+2,o=Math.ceil(n/16),a=new Array(o),h=0;o>h;h++){a[h]=new Array(16);for(var S=0;16>S;S++)a[h][S]=t.charCodeAt(64*h+4*S)<<24|t.charCodeAt(64*h+4*S+1)<<16|t.charCodeAt(64*h+4*S+2)<<8|t.charCodeAt(64*h+4*S+3)}a[o-1][14]=8*(t.length-1)/Math.pow(2,32),a[o-1][14]=Math.floor(a[o-1][14]),a[o-1][15]=8*(t.length-1)&4294967295;for(var u,f,c,i,d,R,p,y,x=new Array(64),h=0;o>h;h++){for(var O=0;16>O;O++)x[O]=a[h][O];for(var O=16;64>O;O++)x[O]=Sha256.σ1(x[O-2])+x[O-7]+Sha256.σ0(x[O-15])+x[O-16]&4294967295;u=e[0],f=e[1],c=e[2],i=e[3],d=e[4],R=e[5],p=e[6],y=e[7];for(var O=0;64>O;O++){var T=y+Sha256.Σ1(d)+Sha256.Ch(d,R,p)+r[O]+x[O],s=Sha256.Σ0(u)+Sha256.Maj(u,f,c);y=p,p=R,R=d,d=i+T&4294967295,i=c,c=f,f=u,u=T+s&4294967295}e[0]=e[0]+u&4294967295,e[1]=e[1]+f&4294967295,e[2]=e[2]+c&4294967295,e[3]=e[3]+i&4294967295,e[4]=e[4]+d&4294967295,e[5]=e[5]+R&4294967295,e[6]=e[6]+p&4294967295,e[7]=e[7]+y&4294967295}return Sha256.toHexStr(e[0])+Sha256.toHexStr(e[1])+Sha256.toHexStr(e[2])+Sha256.toHexStr(e[3])+Sha256.toHexStr(e[4])+Sha256.toHexStr(e[5])+Sha256.toHexStr(e[6])+Sha256.toHexStr(e[7])},Sha256.ROTR=function(t,r){return r>>>t|r<<32-t},Sha256.Σ0=function(t){return Sha256.ROTR(2,t)^Sha256.ROTR(13,t)^Sha256.ROTR(22,t)},Sha256.Σ1=function(t){return Sha256.ROTR(6,t)^Sha256.ROTR(11,t)^Sha256.ROTR(25,t)},Sha256.σ0=function(t){return Sha256.ROTR(7,t)^Sha256.ROTR(18,t)^t>>>3},Sha256.σ1=function(t){return Sha256.ROTR(17,t)^Sha256.ROTR(19,t)^t>>>10},Sha256.Ch=function(t,r,e){return t&r^~t&e},Sha256.Maj=function(t,r,e){return t&r^t&e^r&e},Sha256.toHexStr=function(t){for(var r,e="",n=7;n>=0;n--)r=t>>>4*n&15,e+=r.toString(16);return e},"undefined"==typeof String.prototype.utf8Encode&&(String.prototype.utf8Encode=function(){return unescape(encodeURIComponent(this))}),"undefined"==typeof String.prototype.utf8Decode&&(String.prototype.utf8Decode=function(){try{return decodeURIComponent(escape(this))}catch(t){return this}}),"undefined"!=typeof module&&module.exports&&(module.exports=Sha256),"function"==typeof define&&define.amd&&define([],function(){return Sha256});
+    
 
     //////////////////////////////////////////////////////////////////////////
     // Version                                                              //
@@ -128,7 +146,7 @@
     // video duration in milliseconds
     var lastDuration = 60 * 60 * 1000;
     var getDuration = function() {
-      var time = jQuery('.time-display-element')[2];
+      var time = jQuery(videoDurationSelector)[2];
       if (time !== undefined) {
         lastDuration = timeStringtoSeconds(time.textContent)
       }
@@ -140,7 +158,7 @@
 
     // 'playing', 'paused', 'loading', or 'idle'
     var getState = function() {
-      if (jQuery('div.pf-ui-element.pf-ui-element-left.pf-ui-element-active.pf-icon.pf-icon_icPlay').first().is(":visible")) {
+      if (jQuery(playButtonSelector).first().is(":visible")) {
         console.log("state: paused")
         return 'paused';
       }
@@ -148,7 +166,7 @@
         console.log("state: loading")
         return 'loading';
       }
-      if (jQuery('div.pf-ui-element.pf-ui-element-left.pf-ui-element-active.pf-icon.pf-icon_icPause').first().is(":visible")) {
+      if (jQuery(pauseButtonSelector).first().is(":visible")) {
         console.log("state: playing")
         return 'playing';
       } else {
@@ -159,7 +177,7 @@
 
     // current playback position in milliseconds
     var getPlaybackPosition = function() {
-      var position = timeStringtoSeconds(jQuery('.time-display-element').text());
+      var position = timeStringtoSeconds(jQuery(videoDurationSelector).text());
       console.log(position)
       return position
     };
@@ -178,7 +196,7 @@
     // show the playback controls
     var showControls = function() {
       uiEventsHappening += 1;
-      var scrubber = jQuery('.pf-seek-bar-padding');
+      var scrubber = jQuery(progressBarSelector);
       var eventOptions = {
         'bubbles': true,
         'button': 0,
@@ -195,7 +213,7 @@
     // hide the playback controls
     var hideControls = function() {
       uiEventsHappening += 1;
-      var player = jQuery('#videoland-player');
+      var player = jQuery(playerSelector);
       var mouseX = 100; // relative to the document
       var mouseY = 100; // relative to the document
       var eventOptions = {
@@ -220,7 +238,7 @@
     // pause
     var pause = function() {
       uiEventsHappening += 1;
-      jQuery('.pf-icon_icPause').click();
+      jQuery(pauseButtonSelector).click();
       return delayUntil(function() {
         return getState() === 'paused';
       }, 1000)().then(hideControls).ensure(function() {
@@ -231,7 +249,7 @@
     // play
     var play = function() {
       uiEventsHappening += 1;
-      jQuery('.pf-icon_icPlay').click();
+      jQuery(playButtonSelector).click();
       return delayUntil(function() {
         return getState() === 'playing';
       }, 2500)().then(hideControls).ensure(function() {
@@ -243,9 +261,9 @@
     var freeze = function(milliseconds) {
       return function() {
         uiEventsHappening += 1;
-        jQuery('.pf-icon_icPause').click();
+        jQuery(pauseButtonSelector).click();
         return delay(milliseconds)().then(function() {
-          jQuery('.pf-icon_icPlay').click();
+          jQuery(playButtonSelector).click();
         }).then(hideControls).ensure(function() {
           uiEventsHappening -= 1;
         });
@@ -261,7 +279,7 @@
         var eventOptions, scrubber, oldPlaybackPosition, newPlaybackPosition;
         return showControls().then(function() {
           // compute the parameters for the mouse events
-          scrubber = jQuery('.pf-seek-bar-padding');
+          scrubber = jQuery(progressBarSelector);
           var factor = (milliseconds - seekErrorMean) / getDuration();
           factor = Math.min(Math.max(factor, 0), 1);
           var mouseX = scrubber.offset().left + Math.round(scrubber.width() * factor); // relative to the document
@@ -284,7 +302,7 @@
           scrubber[0].dispatchEvent(new MouseEvent('mouseover', eventOptions));
         }).then(delayUntil(function() {
           // wait for the trickplay preview to show up
-          return jQuery('.pf-seek-bar-padding').is(':visible');
+          return jQuery(progressBarSelector).is(':visible');
         }, 2500)).then(function() {
           // remember the old position
           oldPlaybackPosition = getPlaybackPosition();
@@ -313,7 +331,7 @@
     //////////////////////////////////////////////////////////////////////////
 
     // connection to the server
-    var socket = io("http://localhost:3000");
+    var socket = io(serverUrl);
 
     // get the userId from the server
     var userId = null;
@@ -493,7 +511,7 @@
     // set up the chat state, or reset the state if the system has already been set up
     var initChat = function() {
       if (jQuery('#chat-container').length === 0) {
-        jQuery('#videoland-player').after(chatHtml);
+        jQuery(playerSelector).after(chatHtml);
         jQuery('#presence-indicator').hide();
         var oldPageX = null;
         var oldPageY = null;
@@ -559,20 +577,20 @@
 
     // query whether the chat sidebar is visible
     var getChatVisible = function() {
-      return jQuery('#videoland-player').hasClass('with-chat');
+      return jQuery(playerSelector).hasClass('with-chat');
     };
 
     // show or hide the chat sidebar
     var setChatVisible = function(visible) {
       if (visible) {
-        jQuery('#videoland-player').addClass('with-chat');
+        jQuery(playerSelector).addClass('with-chat');
         jQuery('#chat-container').show();
         if (!document.hasFocus()) {
           clearUnreadCount();
         }
       } else {
         jQuery('#chat-container').hide();
-        jQuery('#videoland-player').removeClass('with-chat');
+        jQuery(playerSelector).removeClass('with-chat');
       }
     };
 
