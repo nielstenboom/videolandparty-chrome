@@ -338,8 +338,14 @@
     socket.on('userId', function(data) {
       if (userId === null) {
         userId = data;
+
+        socket.emit('userName', {
+          userId: userId,
+          userName: "henk"
+        });
       }
     });
+
 
     //////////////////////////////////////////////////////////////////////////
     // Chat API                                                             //
@@ -564,6 +570,7 @@
         // receive messages from the server
         socket.on('sendMessage', function(data) {
           addMessage(data);
+          console.log(data);
         });
 
         // receive presence updates from the server
