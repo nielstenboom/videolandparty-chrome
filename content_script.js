@@ -117,34 +117,51 @@
     // we will mistake simulated actions for real ones
     var uiEventsHappening = 0;
 
+    
+    function timeStringtoSeconds(time){
+      time = time.split(":")
+      var minutes = parseInt(time[0])
+      var seconds = parseInt(time[1])
+      return (minutes*60 + seconds)*1000
+    }
+
     // video duration in milliseconds
     var lastDuration = 60 * 60 * 1000;
     var getDuration = function() {
-      var video = jQuery('.player-video-wrapper video');
-      if (video.length > 0) {
-        lastDuration = Math.floor(video[0].duration * 1000);
+      var time = jQuery('.time-display-element')[2];
+      if (time !== undefined) {
+        lastDuration = timeStringtoSeconds(time.textContent)
       }
+      console.log("total duration:")
+      console.log(lastDuration)
+      console.log("----")
       return lastDuration;
     };
 
     // 'playing', 'paused', 'loading', or 'idle'
     var getState = function() {
-      if (jQuery('.timeout-wrapper.player-active .icon-play').length > 0) {
-        return 'idle';
+      if (jQuery('div.pf-ui-element.pf-ui-element-left.pf-ui-element-active.pf-icon.pf-icon_icPlay').first().is(":visible")) {
+        console.log("state: paused")
+        return 'paused';
       }
-      if (jQuery('.player-progress-round.player-hidden').length === 0) {
+      if (jQuery('.spinner-large').is(":visible")) {
+        console.log("state: loading")
         return 'loading';
       }
-      if (jQuery('.player-control-button.player-play-pause.play').length === 0) {
+      if (jQuery('div.pf-ui-element.pf-ui-element-left.pf-ui-element-active.pf-icon.pf-icon_icPause').first().is(":visible")) {
+        console.log("state: playing")
         return 'playing';
       } else {
-        return 'paused';
+        console.log("state: idle")
+        return 'idle';
       }
     };
 
     // current playback position in milliseconds
     var getPlaybackPosition = function() {
-      return Math.floor(jQuery('.player-video-wrapper video')[0].currentTime * 1000);
+      var position = timeStringtoSeconds(jQuery('.time-display-element').text());
+      console.log(position)
+      return position
     };
 
     // wake up from idle mode
@@ -161,7 +178,7 @@
     // show the playback controls
     var showControls = function() {
       uiEventsHappening += 1;
-      var scrubber = jQuery('#scrubber-component');
+      var scrubber = jQuery('.pf-seek-bar-padding');
       var eventOptions = {
         'bubbles': true,
         'button': 0,
@@ -178,7 +195,7 @@
     // hide the playback controls
     var hideControls = function() {
       uiEventsHappening += 1;
-      var player = jQuery('#netflix-player');
+      var player = jQuery('#videoland-player');
       var mouseX = 100; // relative to the document
       var mouseY = 100; // relative to the document
       var eventOptions = {
@@ -203,7 +220,7 @@
     // pause
     var pause = function() {
       uiEventsHappening += 1;
-      jQuery('.player-play-pause.pause').click();
+      jQuery('.pf-icon_icPause').click();
       return delayUntil(function() {
         return getState() === 'paused';
       }, 1000)().then(hideControls).ensure(function() {
@@ -214,7 +231,7 @@
     // play
     var play = function() {
       uiEventsHappening += 1;
-      jQuery('.player-play-pause.play').click();
+      jQuery('.pf-icon_icPlay').click();
       return delayUntil(function() {
         return getState() === 'playing';
       }, 2500)().then(hideControls).ensure(function() {
@@ -226,9 +243,9 @@
     var freeze = function(milliseconds) {
       return function() {
         uiEventsHappening += 1;
-        jQuery('.player-play-pause.pause').click();
+        jQuery('.pf-icon_icPause').click();
         return delay(milliseconds)().then(function() {
-          jQuery('.player-play-pause.play').click();
+          jQuery('.pf-icon_icPlay').click();
         }).then(hideControls).ensure(function() {
           uiEventsHappening -= 1;
         });
@@ -244,7 +261,7 @@
         var eventOptions, scrubber, oldPlaybackPosition, newPlaybackPosition;
         return showControls().then(function() {
           // compute the parameters for the mouse events
-          scrubber = jQuery('#scrubber-component');
+          scrubber = jQuery('.pf-seek-bar-padding');
           var factor = (milliseconds - seekErrorMean) / getDuration();
           factor = Math.min(Math.max(factor, 0), 1);
           var mouseX = scrubber.offset().left + Math.round(scrubber.width() * factor); // relative to the document
@@ -267,7 +284,7 @@
           scrubber[0].dispatchEvent(new MouseEvent('mouseover', eventOptions));
         }).then(delayUntil(function() {
           // wait for the trickplay preview to show up
-          return jQuery('.trickplay-preview').is(':visible');
+          return jQuery('.pf-seek-bar-padding').is(':visible');
         }, 2500)).then(function() {
           // remember the old position
           oldPlaybackPosition = getPlaybackPosition();
@@ -296,7 +313,7 @@
     //////////////////////////////////////////////////////////////////////////
 
     // connection to the server
-    var socket = io('https://netflixparty-server.herokuapp.com');
+    var socket = io("http://localhost:3000");
 
     // get the userId from the server
     var userId = null;
@@ -330,7 +347,7 @@
     // this is the markup that needs to be injected onto the page for chat
     var chatHtml = `
       <style>
-        #netflix-player.with-chat {
+        #videoland-player.with-chat {
           width: calc(100% - ${chatSidebarWidth}px) !important;
         }
 
@@ -476,7 +493,7 @@
     // set up the chat state, or reset the state if the system has already been set up
     var initChat = function() {
       if (jQuery('#chat-container').length === 0) {
-        jQuery('#netflix-player').after(chatHtml);
+        jQuery('#videoland-player').after(chatHtml);
         jQuery('#presence-indicator').hide();
         var oldPageX = null;
         var oldPageY = null;
@@ -542,20 +559,20 @@
 
     // query whether the chat sidebar is visible
     var getChatVisible = function() {
-      return jQuery('#netflix-player').hasClass('with-chat');
+      return jQuery('#videoland-player').hasClass('with-chat');
     };
 
     // show or hide the chat sidebar
     var setChatVisible = function(visible) {
       if (visible) {
-        jQuery('#netflix-player').addClass('with-chat');
+        jQuery('#videoland-player').addClass('with-chat');
         jQuery('#chat-container').show();
         if (!document.hasFocus()) {
           clearUnreadCount();
         }
       } else {
         jQuery('#chat-container').hide();
-        jQuery('#netflix-player').removeClass('with-chat');
+        jQuery('#videoland-player').removeClass('with-chat');
       }
     };
 

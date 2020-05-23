@@ -69,7 +69,7 @@ $(function() {
 
       // connected/disconnected state
       var showConnected = function(sessionId) {
-        var urlWithSessionId = tabs[0].url.split('?')[0] + '?npSessionId=' + encodeURIComponent(sessionId);
+        var urlWithSessionId = sessionId
         $('.disconnected').addClass('hidden');
         $('.connected').removeClass('hidden');
         $('#show-chat').prop('checked', true);
@@ -116,6 +116,16 @@ $(function() {
             videoId: videoId
           }, function(response) {
             showConnected(response.sessionId);
+          });
+        });
+
+        // listen for clicks on the "Create session" button
+        $('#join-session').click(function() {
+          sendMessage('joinSession', {
+            sessionId: $("#join-session-input").val(),
+            videoId: videoId
+          }, function(response) {
+            showConnected(sessionIdFromUrl);
           });
         });
 
