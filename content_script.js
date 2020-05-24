@@ -339,10 +339,6 @@
       if (userId === null) {
         userId = data;
 
-        socket.emit('userName', {
-          userId: userId,
-          userName: "henk"
-        });
       }
     });
 
@@ -430,6 +426,11 @@
           display: block;
           width: ${avatarSize}px;
           height: ${avatarSize}px;
+        }
+
+        #chat-container #chat-history-container #chat-history .chat-message .chat-message-name {
+          font-size: 10px;
+          color: white;
         }
 
         #chat-container #chat-history-container #chat-history .chat-message .chat-message-body {
@@ -570,7 +571,6 @@
         // receive messages from the server
         socket.on('sendMessage', function(data) {
           addMessage(data);
-          console.log(data);
         });
 
         // receive presence updates from the server
@@ -878,6 +878,10 @@
         }
 
         if (request.type === 'createSession') {
+          socket.emit('userName',{
+            userId: userId,
+            userName: request.data.userName
+          });
           socket.emit('createSession', {
             controlLock: request.data.controlLock,
             videoId: request.data.videoId
@@ -900,6 +904,10 @@
         }
 
         if (request.type === 'joinSession') {
+          socket.emit('userName',{
+            userId: userId,
+            userName: request.data.userName
+          });
           socket.emit('joinSession', request.data.sessionId, function(data) {
             if (data.errorMessage) {
               sendResponse({

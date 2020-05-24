@@ -20,6 +20,7 @@ $(function() {
       active: true,
       currentWindow: true
     }, function(tabs) {
+
       // error handling
       var showError = function(err) {
         $('.some-error').removeClass('hidden');
@@ -111,19 +112,23 @@ $(function() {
 
         // listen for clicks on the "Create session" button
         $('#create-session').click(function() {
+          var userName = $("#username").val()
           sendMessage('createSession', {
             controlLock: $('#control-lock').is(':checked'),
-            videoId: videoId
+            videoId: videoId,
+            userName: userName
           }, function(response) {
             showConnected(response.sessionId);
           });
         });
 
-        // listen for clicks on the "Create session" button
+        // listen for clicks on the "join session" button
         $('#join-session').click(function() {
+          var userName = $("#username").val()
           sendMessage('joinSession', {
             sessionId: $("#join-session-input").val(),
-            videoId: videoId
+            videoId: videoId,
+            userName: userName
           }, function(response) {
             showConnected(sessionIdFromUrl);
           });

@@ -10,28 +10,32 @@
   <body>
     <div class="no-error">
       <div class="disconnected">
-        <h2>Create a Netflix Party</h2>
         <p>
-          <label><input type="checkbox" id="control-lock"> Only I have control</label>
+          <label>Naam: <input id="username"></label>
+        </p>
+        <h2>Maak een Videoland Party</h2>
+        <p>
+          <label>Alleen ik ben de videomaster: <input type="checkbox" id="control-lock"></label>
         </p>
         <p>
           <button id="create-session" type="button">Start the party</button>
         </p>
+        <h2>Join een Videoland Party</h2>
         <p>
-          <input id="join-session-input">
+          <label>Party ID: <input id="join-session-input"></label>
         </p>
         <p>
-          <button id="join-session" type="button">Join the party!</button>
+          <button id="join-session" type="button">Join bestaande party!</button>
         </p>
       </div>
       <div class="connected hidden">
-        <p>Share the URL below so others can join the party. The recipient(s) should navigate to this URL and <strong>then click on the Netflix Party icon</strong> to join.</p>
+        <p>Deel de party ID met anderen zodat zij mee kunnen doen. Als ze bij dezelfde video zijn kunnen ze op de extensie klikken om mee te doen!</p>
         <input id="share-url" type="text" readonly="true" autocomplete="off" autofocus />
         <p class="copy-val">
-          <small><a href="#" id="copy-btn">Copy URL</a></small>
+          <small><a href="#" id="copy-btn">Kopieer</a></small>
         </p>
         <p>
-          <label><input type="checkbox" id="show-chat"> Show chat</label>
+          <label><input type="checkbox" id="show-chat">Show chat</label>
         </p>
         <p>
           <button id="leave-session" type="button">Disconnect</button>
