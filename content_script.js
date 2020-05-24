@@ -615,6 +615,7 @@
       messages.push(message);
       jQuery('#chat-history').append(`
         <div class="chat-message${ message.isSystemMessage ? ' system-message' : '' }">
+          <div class="chat-message-name">${message.userName}</div>
           <div class="chat-message-avatar"><img src="data:image/png;base64,${new Identicon(Sha256.hash(message.userId).substr(0, 32), avatarSize * 2, 0).toString()}" /></div>
           <div class="chat-message-body">${message.body.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
         </div>
