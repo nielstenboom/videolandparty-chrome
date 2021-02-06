@@ -652,7 +652,7 @@
 
     // the session
     var sessionId = null;
-    var lastKnownTime = null;
+    var lastKnownTime = 0;
     var lastKnownTimeUpdatedAt = null;
     var ownerId = null;
     var state = null;
@@ -832,8 +832,19 @@
           var newVideoId = parseInt(window.location.href.match(/^.*\/([0-9]+)\??.*/)[1]);
           if (videoId !== null && videoId !== newVideoId) {
             videoId = newVideoId;
-            sessionId = null;
-            setChatVisible(false);
+
+            console.log("New Video started playing!!")
+            console.log(lastKnownTime)
+            lastKnownTime = 0
+            
+            message = {
+              isSystemMessage: true,
+              userName: "System",
+              userId: "000",
+              body: "Next video started playing!"
+            }
+
+            addMessage(message)
           }
 
           pushTask(ping);
