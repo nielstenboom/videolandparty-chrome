@@ -390,7 +390,7 @@
         }
 
         #chat-container #chat-history-container {
-          height: calc(100% - ${chatMessageVerticalPadding * 2 + avatarSize + avatarPadding * 2 + avatarBorder * 2 + chatVericalMargin * 2 + presenceIndicatorHeight}px);
+          height: calc(100% - 95px);
           position: relative;
         }
 
@@ -499,8 +499,21 @@
           padding-bottom: ${chatMessageVerticalPadding - chatInputBorder}px;
           padding-left: ${chatMessageHorizontalPadding}px;
         }
+
+        #chat-support {
+          text-align: center;
+          font-size: 15px
+        }
+
+        #
       </style>
       <div id="chat-container">
+        <div id="chat-support">
+          <p>
+            Do you &#10084;&#65039; Videoland Party?<br>
+            <a href="http://videolandparty.nl#support" target="_blank">Support in keeping it online!</a>
+          </p>
+        </div>
         <div id="chat-history-container">
           <div id="chat-history"></div>
         </div>
