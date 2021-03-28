@@ -137,10 +137,21 @@
 
     
     function timeStringtoSeconds(time){
+      var hours = 0
+      var minutes = 0
+      var seconds = 0
+
       time = time.split(":")
-      var minutes = parseInt(time[0])
-      var seconds = parseInt(time[1])
-      return (minutes*60 + seconds)*1000
+      if (time.length == 2){
+        minutes = parseInt(time[0])
+        seconds = parseInt(time[1])
+      } else {
+        var hours = parseInt(time[0])
+        var minutes = parseInt(time[1])
+        var seconds = parseInt(time[2])
+      }
+      
+      return (hours*60*60 + minutes*60 + seconds)*1000
     }
 
     // video duration in milliseconds
@@ -177,7 +188,10 @@
 
     // current playback position in milliseconds
     var getPlaybackPosition = function() {
-      var position = timeStringtoSeconds(jQuery(videoDurationSelector).text());
+      var time = jQuery(videoDurationSelector)[0];
+      if (time !== undefined) {
+        position = timeStringtoSeconds(time.textContent)
+      }
       console.log(position)
       return position
     };
