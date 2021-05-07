@@ -8,7 +8,6 @@ chrome.runtime.onInstalled.addListener(function(details) {
         new chrome.declarativeContent.PageStateMatcher({
           pageUrl: {
             hostEquals: 'www.videoland.com',
-            pathPrefix: '/player/',
             schemes: ['http', 'https']
           }
         })

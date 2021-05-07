@@ -12,7 +12,9 @@
   // selector for the pause button, be sure the have the visible one
   var pauseButtonSelector = '.bmpui-ui-playbacktogglebutton.bmpui-on'
   // Selector of the elements that contain the time information of the video
-  var videoDurationSelector = '.bmpui-ui-playbacktimelabel'
+  var videoPlaybackSelector = '.bmpui-ui-playbacktimelabel'
+    // Selector of the elements that contain the duration of the video
+  var videoDurationSelector = '.bmpui-ui-playbacktimelabel.bmpui-text-right'
   // Selector of the progress bar of the video, is used to fire click events to get the video in sync with other chatters.
   var progressBarSelector = ".bmpui-seekbar-markers"
   // selector of the whole videoplayer
@@ -157,7 +159,7 @@
     // video duration in milliseconds
     var lastDuration = 60 * 60 * 1000;
     var getDuration = function() {
-      var time = jQuery(videoDurationSelector)[2];
+      var time = jQuery(videoDurationSelector)[0];
       if (time !== undefined) {
         lastDuration = timeStringtoSeconds(time.textContent)
       }
@@ -188,7 +190,7 @@
 
     // current playback position in milliseconds
     var getPlaybackPosition = function() {
-      var time = jQuery(videoDurationSelector)[0];
+      var time = jQuery(videoPlaybackSelector)[0];
       if (time !== undefined) {
         position = timeStringtoSeconds(time.textContent)
       }
@@ -378,10 +380,6 @@
     var chatMessageVerticalPadding = 8;
     var presenceIndicatorHeight = 30;
 
-    // dirty fix playerwidth
-    var playerWidth = jQuery(playerSelector).width()
-    jQuery(playerSelector).width(playerWidth - 360)
-
     // this is the markup that needs to be injected onto the page for chat
     var chatHtml = `
       <style>
@@ -549,6 +547,11 @@
     // set up the chat state, or reset the state if the system has already been set up
     var initChat = function() {
       if (jQuery('#chat-container').length === 0) {
+
+        // dirty fix playerwidth
+        var playerWidth = jQuery(playerSelector).width()
+        jQuery(playerSelector).width(playerWidth - 360)
+
         jQuery(playerSelector).after(chatHtml);
         jQuery('#presence-indicator').hide();
         var oldPageX = null;
