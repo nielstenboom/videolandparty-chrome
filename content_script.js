@@ -8,15 +8,15 @@
 
   // selector of the play button, be sure to only target the visible one, there could be more
   // that have the same selector but are not visible
-  var playButtonSelector = 'div.pf-ui-element.pf-ui-element-left.pf-ui-element-active.pf-icon.pf-icon_icPlay'
+  var playButtonSelector = '.bmpui-ui-playbacktogglebutton.bmpui-off'
   // selector for the pause button, be sure the have the visible one
-  var pauseButtonSelector = 'div.pf-ui-element.pf-ui-element-left.pf-ui-element-active.pf-icon.pf-icon_icPause'
+  var pauseButtonSelector = '.bmpui-ui-playbacktogglebutton.bmpui-on'
   // Selector of the elements that contain the time information of the video
-  var videoDurationSelector = '.time-display-element'
+  var videoDurationSelector = '.bmpui-ui-playbacktimelabel'
   // Selector of the progress bar of the video, is used to fire click events to get the video in sync with other chatters.
-  var progressBarSelector = ".pf-seek-bar-padding"
+  var progressBarSelector = ".bmpui-seekbar-markers"
   // selector of the whole videoplayer
-  var playerSelector = "#videoland-player"
+  var playerSelector = "#player-container"
   
   // make sure the content script is only run once on the page
   if (!window.netflixPartyLoaded) {
@@ -377,6 +377,10 @@
     var chatMessageHorizontalPadding = 8;
     var chatMessageVerticalPadding = 8;
     var presenceIndicatorHeight = 30;
+
+    // dirty fix playerwidth
+    var playerWidth = jQuery(playerSelector).width()
+    jQuery(playerSelector).width(playerWidth - 360)
 
     // this is the markup that needs to be injected onto the page for chat
     var chatHtml = `
