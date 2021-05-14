@@ -546,6 +546,18 @@
 
     // set up the chat state, or reset the state if the system has already been set up
     var initChat = function() {
+      
+      // do some cleanup before initializing the chat first
+
+      // remove the event triggers on the videoland player, such as spacebar to pause
+      document.addEventListener("keyup", function (event) {
+        event.stopPropagation();
+      }, true);
+
+      // remove elements that stay visible 
+      jQuery(".back-button").remove()
+      jQuery(".video-metadata").remove()
+
       if (jQuery('#chat-container').length === 0) {
 
         // dirty fix playerwidth
